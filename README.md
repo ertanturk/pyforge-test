@@ -40,6 +40,10 @@ def test_string():
 pyforge
 ```
 
+## Documentation
+
+For detailed information on using PyForge in your projects, see the [TESTING_GUIDE.md](TESTING_GUIDE.md) file.
+
 ## Project Structure
 
 ```

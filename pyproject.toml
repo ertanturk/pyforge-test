@@ -1,10 +1,10 @@
 [project]
 name = "pyforge-test"
-version = "0.1.0"
+version = "0.0.1"
 description = "A lightweight Python unit testing framework built from scratch."
 readme = "README.md"
 requires-python = ">=3.12"
-license = { text = "MIT" }
+license = "MIT"
 
 authors = [
     { name = "Ertan Tunç Türk" }
@@ -18,22 +18,19 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
-    "License :: OSI Approved :: MIT License"
 ]
 
 [project.urls]
 Homepage = "https://github.com/ertanturk/pyforge-test"
 
 [project.scripts]
-pyforge = "pyforge.cli:main"
+pyforge = "main:main"
 
-[project.optional-dependencies]
-dev = [
-    "pytest",
-    "coverage",
-    "mypy",
-    "ruff"
-]
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 # ----------------------
 # Ruff Configuration

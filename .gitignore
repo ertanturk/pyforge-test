@@ -71,5 +71,4 @@ htmlcov/
 # Project-specific
 # ==================================================
 
-.github/instructions/pyforge.instructions.md
 .tmp/

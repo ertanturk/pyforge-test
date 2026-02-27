@@ -1,0 +1,4 @@
+include README.md
+include LICENSE
+include QUICK_START.md
+recursive-include src/core *.py py.typed

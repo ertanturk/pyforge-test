@@ -16,7 +16,7 @@ configuring sys.path.
 
 Install the pyforge-test package:
 
-    pip install pyforge-test
+    pip install git+https://github.com/ertanturk/pyforge-test.git
 
 ## Creating Test Files
 

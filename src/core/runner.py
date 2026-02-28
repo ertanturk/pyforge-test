@@ -13,6 +13,9 @@ def execute() -> list[tuple[str, str, str, int]]:
     try:
         results: list[tuple[str, str, str, int]] = []
         # Print how many tests are being executed
+        if not TESTS:
+            print("No tests to execute. Exiting.")
+            return results
         print(f"Executing {len(TESTS)} test(s).\n")
         for test, file, line in TESTS:
             try:

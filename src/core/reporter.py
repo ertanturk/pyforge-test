@@ -3,6 +3,8 @@
 Provides functionality to format and display test results.
 """
 
+import sys
+
 
 def report(results: list[tuple[str, str, str, int]]) -> str:
     """Prints the test results in a readable format.
@@ -18,7 +20,7 @@ def report(results: list[tuple[str, str, str, int]]) -> str:
     """
     try:
         if not results:
-            return "No tests were executed."
+            sys.exit(0)  # Exit with code 0 if there are no tests to report
 
         # First categorize results by file name and line number
         categorized_results: dict[str, list[tuple[str, str, int]]] = {}
@@ -31,7 +33,7 @@ def report(results: list[tuple[str, str, str, int]]) -> str:
         for file, tests in categorized_results.items():
             formatted_results.append(f"\nFile: {file}")
             for test_name, result, line in tests:
-                result_check = "✅" if result == "Passed" else "❌" if result == "Failed" else "⚠️"
+                result_check = "✅" if result == "Passed" else "❌" if result == "Failed" else "⚠️ "
                 formatted_results_message = f"  Line {line}: {test_name} - {result_check} {result}"
                 formatted_results.append(formatted_results_message)
         return "\n".join(formatted_results)

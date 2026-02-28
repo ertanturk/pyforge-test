@@ -105,6 +105,10 @@ def discover_and_load_tests(project_root: Path) -> int:
             sys.modules[test_file.stem] = module
             spec.loader.exec_module(module)
 
+            # Verify that the module has a __name__ attribute (it should)
+            if not hasattr(module, "__name__"):
+                raise ImportError(f"Module {test_file.name} does not have a __name__ attribute")
+
             print(f"Loaded: {test_file.name}")
             loaded_count += 1
 
@@ -132,6 +136,9 @@ def main() -> int:
 
         # Discover and load test modules
         modules_loaded: int = discover_and_load_tests(project_root)
+        if modules_loaded == 0:
+            return 0
+
         print(f"\nLoaded {modules_loaded} test module(s).\n")
 
         # Execute collected tests

@@ -2,23 +2,26 @@ from .registry import TESTS
 
 
 # The execute function runs all the collected test functions and returns their results.
-def execute() -> list[tuple[str, str]]:
+def execute() -> list[tuple[str, str, str, int]]:
     """Executes the collected test functions and returns their results.
 
     Returns:
-        list[tuple[str, str]]: A list of tuples containing the test function
-            name and its result ("Passed", "Failed", or "Error: <error message>").
+        list[tuple[str, str, str, int]]: A list of tuples containing the test function
+            name, result ("Passed", "Failed", or "Error: <error message>"),
+            file name, and line number.
     """
     try:
-        results: list[tuple[str, str]] = []
-        for test in TESTS:
+        results: list[tuple[str, str, str, int]] = []
+        # Print how many tests are being executed
+        print(f"Executing {len(TESTS)} test(s).\n")
+        for test, file, line in TESTS:
             try:
                 test()
-                results.append((test.__name__, "Passed"))
+                results.append((test.__name__, "Passed", file, line))
             except AssertionError:
-                results.append((test.__name__, "Failed"))
+                results.append((test.__name__, "Failed", file, line))
             except Exception as e:
-                results.append((test.__name__, f"Error: {e}"))
+                results.append((test.__name__, f"Error: {e}", file, line))
         # After executing all tests, clear the TESTS list to avoid re-execution in future runs
         TESTS.clear()
         return results

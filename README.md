@@ -4,7 +4,7 @@ A lightweight Python unit testing framework built from scratch, designed for sim
 
 ## Features
 
-- **Simple Decorator-Based Tests** - Use the `@collecter` decorator to define tests
+- **Simple Decorator-Based Tests** - Use the `@test` decorator to define tests
 - **Automatic Discovery** - Finds and executes all test files in `tests/` directory
 - **Zero Configuration** - Automatic path setup, works in any project structure
 - **Minimal Dependencies** - Zero external dependencies, pure Python implementation
@@ -40,16 +40,16 @@ Create `tests/test_example.py`:
 ```python
 """Example tests for PyForge."""
 
-from core.collector import collecter
+from core.collector import test
 
 
-@collecter
+@test
 def test_addition() -> None:
     """Test basic addition."""
     assert 2 + 2 == 4
 
 
-@collecter
+@test
 def test_string_concat() -> None:
     """Test string concatenation."""
     assert "Hello" + " World" == "Hello World"
@@ -81,7 +81,7 @@ test_string_concat: Passed
 PyForge automatically:
 
 1. **Discovers** - Finds all `test_*.py` files in your `tests/` directory
-2. **Loads** - Executes test modules (triggering `@collecter` decorators)
+2. **Loads** - Executes test modules (triggering `@test` decorators)
 3. **Registers** - Collects all decorated test functions
 4. **Executes** - Runs tests and captures results
 5. **Reports** - Displays pass/fail/error results
@@ -101,7 +101,7 @@ pyforge-test/
 │   └── core/
 │       ├── __init__.py
 │       ├── main.py          # CLI entry point
-│       ├── collector.py     # @collecter decorator
+│       ├── collector.py     # @test decorator
 │       ├── registry.py      # Test registry storage
 │       ├── runner.py        # Test executor
 │       └── reporter.py      # Results formatter
@@ -122,7 +122,7 @@ Test files must follow these conventions:
 ✓ Named `test_*.py` or `*_test.py`  
 ✓ Functions start with `test_` prefix  
 ✓ Functions have no parameters  
-✓ Functions decorated with `@collecter`  
+✓ Functions decorated with `@test`  
 ✓ Functions have return type hint `-> None`  
 ✓ Use standard `assert` statements
 

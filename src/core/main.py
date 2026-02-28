@@ -105,7 +105,7 @@ def discover_and_load_tests(project_root: Path) -> int:
             sys.modules[test_file.stem] = module
             spec.loader.exec_module(module)
 
-            print(f"✓ Loaded: {test_file.name}")
+            print(f"Loaded: {test_file.name}")
             loaded_count += 1
 
         except Exception as e:

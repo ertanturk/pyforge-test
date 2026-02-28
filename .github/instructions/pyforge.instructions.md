@@ -77,7 +77,7 @@ def function_name(param1: str, param2: int) -> bool:
 
 ```python
 # ✓ Correct
-def collecter(function: Callable[..., None]) -> Callable[..., None]:
+def test(function: Callable[..., None]) -> Callable[..., None]:
     """Collects the test functions and adds them to the TESTS list.
 
     Args:
@@ -184,7 +184,7 @@ from collections.abc import Callable
 from .registry import TESTS
 
 # Module comment on purpose (optional)
-def collecter(function: Callable[..., None]) -> Callable[..., None]:
+def test(function: Callable[..., None]) -> Callable[..., None]:
     """..."""
 
 
@@ -208,7 +208,7 @@ Tests for the framework must follow pyforge's own conventions.
 
 ```python
 # ✓ Correct
-@collecter
+@test
 def test_valid_function_is_collected() -> None:
     """Verify a valid test function is added to TESTS."""
     assert len(TESTS) > 0
@@ -217,7 +217,7 @@ def test_valid_function_is_collected() -> None:
 def test_collector_rejects_non_test_functions() -> None:
     """Verify functions not starting with 'test_' are rejected."""
     with pytest.raises(ValueError):
-        collecter(lambda: None)
+        test(lambda: None)
 
 # ✗ Wrong
 def test_invalid_name():  # Missing return type, wrong prefix

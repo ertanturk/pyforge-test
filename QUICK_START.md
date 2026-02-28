@@ -30,13 +30,13 @@ touch tests/__init__.py  # Create empty __init__.py
 Create `tests/test_example.py`:
 
 ```python
-from core.collector import collecter
+from core.collector import test
 
-@collecter
+@test
 def test_addition() -> None:
     assert 2 + 2 == 4
 
-@collecter
+@test
 def test_subtraction() -> None:
     assert 5 - 3 == 2
 ```
@@ -78,7 +78,7 @@ python3 src/core/main.py
 - Create empty `tests/__init__.py`
 - Functions must start with `test_`
 - Functions must have no parameters
-- Use `@collecter` decorator
+- Use `@test` decorator
 - Add return type hint `-> None`
 
 ## Example Test File
@@ -86,22 +86,22 @@ python3 src/core/main.py
 ```python
 """Tests for my features."""
 
-from core.collector import collecter
+from core.collector import test
 
 
-@collecter
+@test
 def test_addition() -> None:
     """Test basic arithmetic."""
     assert 2 + 2 == 4
 
 
-@collecter
+@test
 def test_string_concat() -> None:
     """Test string operations."""
     assert "Hello" + " World" == "Hello World"
 
 
-@collecter
+@test
 def test_list_sum() -> None:
     """Test list operations."""
     numbers: list[int] = [1, 2, 3, 4, 5]
@@ -129,7 +129,7 @@ my-project/
 2. If not found, checks parent directory
 3. Falls back to pyforge installation directory
 4. Recursively loads all files matching `test*.py` pattern
-5. Collects all functions decorated with `@collecter`
+5. Collects all functions decorated with `@test`
 6. Executes tests in order and displays results
 
 ## Test Results Format
@@ -149,7 +149,7 @@ PyForge automatically:
 Your tests can simply do:
 
 ```python
-from core.collector import collecter  # No setup needed!
+from core.collector import test  # No setup needed!
 ```
 
 ## Troubleshooting
@@ -212,7 +212,7 @@ tests/
 
 1. Create `tests/` directory with `__init__.py`
 2. Create `test_*.py` files
-3. Write test functions with `@collecter` decorator
+3. Write test functions with `@test` decorator
 4. Run `pyforge` to execute tests
 
 Enjoy automated testing with PyForge!

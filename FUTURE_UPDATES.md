@@ -4,7 +4,7 @@
 
 ### Phase 1: Core Enhancements
 
-- [ ] **Parameterized Tests** - Support for running tests with multiple sets of parameters
+- [x] **Parameterized Tests** - Support for running tests with multiple sets of parameters
 - [ ] **Test Fixtures** - Setup and teardown functionality for test initialization
 - [ ] **Test Skipping** - Ability to skip tests conditionally with `@skip` and `@skipif` decorators
 - [ ] **Test Markers** - Tag tests with markers (e.g., `@marker("slow")`) for selective execution
@@ -22,7 +22,6 @@
 - [ ] **Test Timeouts** - Limit execution time per test with configurable timeouts
 - [ ] **Mocking Support** - Built-in utilities for mocking and patching
 
-
 ## Version Roadmap
 
 - **v0.1.0** - Core framework with basic test collection and execution
@@ -33,3 +32,4 @@
 ## Feedback & Suggestions
 
 Have ideas for new features? Please open an issue on GitHub to discuss potential improvements.
+o discuss potential improvements.

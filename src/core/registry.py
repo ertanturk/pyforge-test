@@ -1,3 +1,3 @@
 from collections.abc import Callable
 
-TESTS: list[Callable[..., None]] = []
+TESTS: list[tuple[Callable[..., None], str, int]] = []

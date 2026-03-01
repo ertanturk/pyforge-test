@@ -30,7 +30,7 @@ touch tests/__init__.py  # Create empty __init__.py
 Create `tests/test_example.py`:
 
 ```python
-from core.collector import test
+from pyforge_test.core.collector import test
 
 @test
 def test_addition() -> None:
@@ -62,13 +62,7 @@ pyforge
 ### Option 2: Python Module
 
 ```bash
-python3 -m core.main
-```
-
-### Option 3: Direct Script (Development)
-
-```bash
-python3 src/core/main.py
+python3 -m pyforge_test.core.main
 ```
 
 ## Test File Requirements
@@ -86,7 +80,7 @@ python3 src/core/main.py
 ```python
 """Tests for my features."""
 
-from core.collector import test
+from pyforge_test.core.collector import test
 
 
 @test
@@ -149,7 +143,7 @@ PyForge automatically:
 Your tests can simply do:
 
 ```python
-from core.collector import test  # No setup needed!
+from pyforge_test.core.collector import test  # No setup needed!
 ```
 
 ## Troubleshooting
@@ -165,7 +159,7 @@ from core.collector import test  # No setup needed!
 ### Import errors
 
 - Make sure `tests/__init__.py` exists
-- Verify the test can import `core.collector`
+- Verify the test can import `pyforge_test.core.collector`
 - If importing custom code, place it in `src/` directory
 - Check that dependencies are installed
 

@@ -40,7 +40,7 @@ Create `tests/test_example.py`:
 ```python
 """Example tests for PyForge."""
 
-from core.collector import test
+from pyforge_test.core.collector import test
 
 
 @test
@@ -97,17 +97,19 @@ For future planned features, see [FUTURE_UPDATES.md](FUTURE_UPDATES.md).
 ```
 pyforge-test/
 ├── src/
-│   ├── __init__.py          # Package marker
-│   └── core/
-│       ├── __init__.py
-│       ├── main.py          # CLI entry point
-│       ├── collector.py     # @test decorator
-│       ├── registry.py      # Test registry storage
-│       ├── runner.py        # Test executor
-│       └── reporter.py      # Results formatter
+│   └── pyforge_test/
+│       ├── __init__.py          # Package marker
+│       └── core/
+│           ├── __init__.py
+│           ├── main.py          # CLI entry point
+│           ├── collector.py     # @test decorator
+│           ├── registry.py      # Test registry storage
+│           ├── runner.py        # Test executor
+│           ├── reporter.py      # Results formatter
+│           └── py.typed         # Type checking marker
 ├── tests/
 │   ├── __init__.py          # Auto-configures paths
-│   └── test_basic.py        # Example test file
+│   └── test_collector.py    # Example test file
 ├── pyproject.toml           # Package configuration
 ├── QUICK_START.md           # User guide
 ├── README.md                # This file
@@ -199,10 +201,7 @@ From your project root:
 pyforge
 
 # Using Python module
-python3 -m core.main
-
-# During development (from pyforge source)
-python3 src/core/main.py
+python3 -m pyforge_test.core.main
 ```
 
 ## Development Instructions

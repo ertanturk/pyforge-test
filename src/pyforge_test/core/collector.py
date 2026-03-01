@@ -28,7 +28,9 @@ def test(function: Callable[..., None]) -> Callable[..., None]:
         elif function.__code__.co_argcount > 0:
             raise ValueError(f"Test function '{function.__name__}' must not have parameters.")
         # Add the function to TESTS list with the file name and line number for better debugging
-        TESTS.append((function, function.__code__.co_filename, function.__code__.co_firstlineno))
+        TESTS.append(
+            (function, function.__code__.co_filename, function.__code__.co_firstlineno, None)
+        )
         return function
     except Exception as e:
         raise RuntimeError(
@@ -84,6 +86,7 @@ def test_parameterized(
                         make_test,
                         function.__code__.co_filename,
                         function.__code__.co_firstlineno,
+                        None,
                     )
                 )
             return function
@@ -92,5 +95,86 @@ def test_parameterized(
                 f"An error occurred while collecting parameterized test function "
                 f"'{function.__name__}': {e}"
             ) from e
+
+    return decorator
+
+
+# The test_skipif function is a decorator that allows skipping a test function based on a condition.
+def test_skipif(
+    condition: bool, reason: str
+) -> Callable[[Callable[..., None]], Callable[..., None]]:
+    """A decorator to skip a test function if a certain condition is met.
+
+    Args:
+        condition (bool): The condition that determines whether the test should be skipped.
+        reason (str): The reason for skipping the test, which will be displayed in the report.
+
+    Returns:
+        Callable[[Callable[..., None]], Callable[..., None]]:
+            A decorator that can be applied to a test function.
+    """
+
+    def decorator(function: Callable[..., None]) -> Callable[..., None]:
+        """The actual decorator that wraps the test function.
+
+        Args:
+            function (Callable[..., None]): The test function to be decorated.
+
+        Returns:
+            Callable[..., None]: The wrapped test function that will
+            be skipped if the condition is met.
+        """
+        try:
+            # Check if the function is already in the TESTS list to avoid duplicates
+            if function in TESTS:
+                raise ValueError(f"Test function '{function.__name__}' is already collected.")
+            # Check if the function name starts with "test_"
+            if not function.__name__.startswith("test_"):
+                raise ValueError(f"Test function '{function.__name__}' must start with 'test_'.")
+            # Check if the function is valid or not (should be callable)
+            if not callable(function):
+                raise ValueError(f"Test function '{function.__name__}' must be callable.")
+            # Add the skip information to TESTS list with the file name
+            # and line number for better debugging
+            TESTS.append(
+                (
+                    function,
+                    function.__code__.co_filename,
+                    function.__code__.co_firstlineno,
+                    {"skip": condition, "reason": reason},
+                )
+            )
+            return function
+        except Exception as e:
+            raise RuntimeError(
+                f"An error occurred while collecting skipif test function "
+                f"'{function.__name__}': {e}"
+            ) from e
+
+    return decorator
+
+
+# The test_skip function is a decorator that allows skipping a test function unconditionally.
+def test_skip(reason: str) -> Callable[[Callable[..., None]], Callable[..., None]]:
+    """A decorator to skip a test function unconditionally.
+
+    Args:
+        reason (str): The reason for skipping the test, which will be displayed in the report.
+
+    Returns:
+        Callable[[Callable[..., None]], Callable[..., None]]:
+            A decorator that can be applied to a test function.
+    """
+
+    def decorator(function: Callable[..., None]) -> Callable[..., None]:
+        """The actual decorator that wraps the test function.
+
+        Args:
+            function (Callable[..., None]): The test function to be decorated.
+
+        Returns:
+            Callable[..., None]: The wrapped test function that will be skipped unconditionally.
+        """
+        return test_skipif(True, reason)(function)
 
     return decorator

@@ -24,7 +24,7 @@ classifiers = [
 Homepage = "https://github.com/ertanturk/pyforge-test"
 
 [project.scripts]
-pyforge = "core.main:main"
+pyforge = "pyforge_test.core.main:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
@@ -33,7 +33,7 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-core = ["py.typed"]
+pyforge_test = ["core/py.typed"]
 
 # ----------------------
 # Ruff Configuration

@@ -5,7 +5,7 @@
 ### Phase 1: Core Enhancements
 
 - [x] **Parameterized Tests** - Support for running tests with multiple sets of parameters
-- [ ] **Test Skipping** - Ability to skip tests conditionally with `@skip` and `@skipif` decorators
+- [x] **Test Skipping** - Ability to skip tests conditionally with `@skip` and `@skipif` decorators
 - [ ] **Test Markers** - Tag tests with markers (e.g., `@marker("slow")`) for selective execution
 
 ### Phase 2: Reporting & Logging
@@ -31,3 +31,4 @@
 ## Feedback & Suggestions
 
 Have ideas for new features? Please open an issue on GitHub to discuss potential improvements.
+discuss potential improvements.

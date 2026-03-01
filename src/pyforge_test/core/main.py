@@ -10,14 +10,14 @@ import sys
 import traceback
 from pathlib import Path
 
-# Set up path for tests package import
-_pyforge_root: Path = Path(__file__).parent.parent  # src/
-sys.path.insert(0, str(_pyforge_root))
-with contextlib.suppress(ImportError):
-    import tests  # noqa: F401
-
 from .reporter import report
 from .runner import execute
+
+# Set up path for tests package import
+_pyforge_root: Path = Path(__file__).parent.parent.parent.parent  # project root
+sys.path.insert(0, str(_pyforge_root))
+with contextlib.suppress(ImportError):
+    import tests  # pyright: ignore[reportUnusedImport] # noqa: F401
 
 
 def _find_project_root() -> Path:
@@ -43,7 +43,7 @@ def _find_project_root() -> Path:
         return parent
 
     # Fall back to pyforge installation directory
-    pyforge_root: Path = Path(__file__).parent.parent
+    pyforge_root: Path = Path(__file__).parent.parent.parent.parent
     if (pyforge_root / "tests").exists() and (pyforge_root / "tests").is_dir():
         return pyforge_root
 
@@ -142,13 +142,15 @@ def main() -> int:
         print(f"\nLoaded {modules_loaded} test module(s).\n")
 
         # Execute collected tests
-        results: list[tuple[str, str]] = execute()
+        results = execute()
 
         # Generate and display report
-        output: str = report(results)
+        output: str = report(results)  # pyright: ignore[reportArgumentType]
         print(output)
 
-        return 0
+        # Return 1 if any tests failed (status is not "passed")
+        has_failures: bool = any(result[1] != "passed" for result in results)
+        return 1 if has_failures else 0
 
     except FileNotFoundError as e:
         print(f"Error: {e}")

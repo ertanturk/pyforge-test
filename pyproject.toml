@@ -1,6 +1,6 @@
 [project]
 name = "pyforge-test"
-version = "0.0.1"
+version = "0.1.0"
 description = "A lightweight Python unit testing framework built from scratch."
 readme = "README.md"
 requires-python = ">=3.12"

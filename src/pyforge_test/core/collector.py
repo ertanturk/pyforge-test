@@ -17,7 +17,7 @@ def test(function: Callable[..., None]) -> Callable[..., None]:
     """
     try:
         # check if the function is already in the TESTS list to avoid duplicates
-        if function in TESTS:
+        if any(test_func == function for test_func, *_ in TESTS):
             raise ValueError(f"Test function '{function.__name__}' is already collected.")
         # check if the function name starts with "test_"
         if not function.__name__.startswith("test_"):
@@ -29,7 +29,7 @@ def test(function: Callable[..., None]) -> Callable[..., None]:
             raise ValueError(f"Test function '{function.__name__}' must not have parameters.")
         # Add the function to TESTS list with the file name and line number for better debugging
         TESTS.append(
-            (function, function.__code__.co_filename, function.__code__.co_firstlineno, None)
+            (function, function.__code__.co_filename, function.__code__.co_firstlineno, None, None)
         )
         return function
     except Exception as e:
@@ -64,7 +64,7 @@ def test_parameterized(
         """
         try:
             # Check if the function is already in the TESTS list to avoid duplicates
-            if function in TESTS:
+            if any(test_func == function for test_func, *_ in TESTS):
                 raise ValueError(f"Test function '{function.__name__}' is already collected.")
             # Check if the function name starts with "test_"
             if not function.__name__.startswith("test_"):
@@ -86,6 +86,7 @@ def test_parameterized(
                         make_test,
                         function.__code__.co_filename,
                         function.__code__.co_firstlineno,
+                        None,
                         None,
                     )
                 )
@@ -126,7 +127,7 @@ def test_skipif(
         """
         try:
             # Check if the function is already in the TESTS list to avoid duplicates
-            if function in TESTS:
+            if any(test_func == function for test_func, *_ in TESTS):
                 raise ValueError(f"Test function '{function.__name__}' is already collected.")
             # Check if the function name starts with "test_"
             if not function.__name__.startswith("test_"):
@@ -142,6 +143,7 @@ def test_skipif(
                     function.__code__.co_filename,
                     function.__code__.co_firstlineno,
                     {"skip": condition, "reason": reason},
+                    None,
                 )
             )
             return function
@@ -176,5 +178,70 @@ def test_skip(reason: str) -> Callable[[Callable[..., None]], Callable[..., None
             Callable[..., None]: The wrapped test function that will be skipped unconditionally.
         """
         return test_skipif(True, reason)(function)
+
+    return decorator
+
+
+# Built-in markers
+BUILTIN_MARKERS = {
+    "slow": "Mark test as slow-running",
+    "integration": "Mark test as an integration test (requires external resources)",
+}
+
+
+# The test_marker function is a decorator that allows marking a test function with a custom marker.
+def test_marker(marker: str) -> Callable[[Callable[..., None]], Callable[..., None]]:
+    """A decorator to apply a built-in marker to a test function.
+
+    Usage:
+        @test_marker("integration")
+        @test
+        def test_database_connection() -> None:
+            pass
+
+    Args:
+        marker (str): The marker to be applied to the test function.
+
+    Returns:
+        Callable[[Callable[..., None]], Callable[..., None]]:
+            A decorator that can be applied to a test function.
+
+    Raises:
+        ValueError: If the marker is not a built-in marker.
+    """
+
+    def decorator(function: Callable[..., None]) -> Callable[..., None]:
+        """The actual decorator that applies the marker to the test function.
+
+        Args:
+            function (Callable[..., None]): The test function to be marked.
+
+        Returns:
+            Callable[..., None]: The test function with the applied marker.
+
+        Raises:
+            ValueError: If the test function is not collected before applying the marker.
+            RuntimeError: If an error occurs while applying the marker.
+        """
+        try:
+            # Check if the marker is a built-in marker
+            if marker not in BUILTIN_MARKERS:
+                raise ValueError(f"Marker '{marker}' is not a built-in marker.")
+            # Check if the marker is applied to collected test function
+            if not any(test_func == function for test_func, *_ in TESTS):
+                raise ValueError(
+                    f"Test function '{function.__name__}' must be collected before applying marker."
+                )
+            # Update the marker information in TESTS list
+            for index, (test_func, file, line, skip_info, _marker) in enumerate(TESTS):
+                if test_func == function:
+                    TESTS[index] = (test_func, file, line, skip_info, marker)
+                    break
+            return function
+        except Exception as e:
+            raise RuntimeError(
+                f"An error occurred while applying marker '{marker}' to test function "
+                f"'{function.__name__}': {e}"
+            ) from e
 
     return decorator

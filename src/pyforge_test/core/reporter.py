@@ -7,7 +7,7 @@ import sys
 from typing import Any
 
 
-def report(results: list[tuple[str, str, str, int, dict[str, Any] | None]]) -> str:
+def report(results: list[tuple[str, str, str, int, dict[str, Any] | None, str | None]]) -> str:
     """Prints the test results in a readable format.
 
     Args:
@@ -24,16 +24,18 @@ def report(results: list[tuple[str, str, str, int, dict[str, Any] | None]]) -> s
             sys.exit(0)  # Exit with code 0 if there are no tests to report
 
         # First categorize results by file name and line number
-        categorized_results: dict[str, list[tuple[str, str, int, dict[str, Any] | None]]] = {}
-        for test_name, result, file, line, skip_info in results:
+        categorized_results: dict[
+            str, list[tuple[str, str, int, dict[str, Any] | None, str | None]]
+        ] = {}
+        for test_name, result, file, line, skip_info, _marker in results:
             if file not in categorized_results:
                 categorized_results[file] = []
-            categorized_results[file].append((test_name, result, line, skip_info))
+            categorized_results[file].append((test_name, result, line, skip_info, _marker))
         # Now format the results
         formatted_results: list[str] = []
         for file, tests in categorized_results.items():
             formatted_results.append(f"\nFile: {file}")
-            for test_name, result, line, skip_info in tests:
+            for test_name, result, line, skip_info, _marker in tests:
                 if skip_info and skip_info.get("skip", False):
                     result_check = "⏭️ "
                     skip_reason = skip_info["reason"]

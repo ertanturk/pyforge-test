@@ -4,14 +4,15 @@ Provides functionality to format and display test results.
 """
 
 import sys
-from typing import Any
+
+from .registry import ResultDict
 
 
-def report(results: list[dict[str, str | int | dict[str, Any] | None]]) -> str:
+def report(results: list[ResultDict]) -> str:
     """Prints the test results in a readable format.
 
     Args:
-        results (list[dict]): A list of dictionaries containing test results
+        results (list[ResultDict]): A list of dictionaries containing test results
             with keys: name, result, filename, line_number, skip_info, marker.
 
     Returns:
@@ -22,7 +23,7 @@ def report(results: list[dict[str, str | int | dict[str, Any] | None]]) -> str:
             sys.exit(0)  # Exit with code 0 if there are no tests to report
 
         # First categorize results by file name and line number
-        categorized_results: dict[str, list[dict[str, str | int | dict[str, Any] | None]]] = {}
+        categorized_results: dict[str, list[ResultDict]] = {}
         for result in results:
             file = result["filename"]
             if file not in categorized_results:

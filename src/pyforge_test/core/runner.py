@@ -1,4 +1,4 @@
-from .registry import TESTS, TestCase
+from .registry import TESTS, ResultDict, TestCase
 
 
 def _sort_tests_by_marker(
@@ -22,7 +22,7 @@ def _sort_tests_by_marker(
     return sorted(tests, key=lambda t: marker_priority.get(t["marker"], 0))
 
 
-def execute() -> list[dict[str, str | int | dict[str, str] | None]]:
+def execute() -> list[ResultDict]:
     """Execute collected test functions and return their results.
 
     Tests are sorted by marker priority before execution. Skip conditions are
@@ -30,7 +30,7 @@ def execute() -> list[dict[str, str | int | dict[str, str] | None]]:
     skip info, and marker.
 
     Returns:
-        list[dict]: A list of dictionaries containing: name, result, filename,
+        list[ResultDict]: A list of dictionaries containing: name, result, filename,
             line_number, skip_info, and marker. Result values: "Passed", "Failed",
             "Error: <msg>", or "Skipped: <reason>".
 
@@ -38,7 +38,7 @@ def execute() -> list[dict[str, str | int | dict[str, str] | None]]:
         RuntimeError: If an error occurs during test execution.
     """
     try:
-        results: list[dict[str, str | int | dict[str, str] | None]] = []
+        results: list[ResultDict] = []
 
         if not TESTS:
             print("No tests to execute. Exiting.")

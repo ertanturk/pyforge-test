@@ -133,7 +133,7 @@ def test_skipif(
         """
         try:
             # Check if the function is already in the TESTS list to avoid duplicates
-            if any(test_func == function for test_func, *_ in TESTS):
+            if any(test_dict["function"] == function for test_dict in TESTS):
                 raise ValueError(f"Test function '{function.__name__}' is already collected.")
             # Check if the function name starts with "test_"
             if not function.__name__.startswith("test_"):
@@ -144,13 +144,13 @@ def test_skipif(
             # Add the skip information to TESTS list with the file name
             # and line number for better debugging
             TESTS.append(
-                (
-                    function,
-                    function.__code__.co_filename,
-                    function.__code__.co_firstlineno,
-                    {"skip": condition, "reason": reason},
-                    None,
-                )
+                {
+                    "function": function,
+                    "filename": function.__code__.co_filename,
+                    "line_number": function.__code__.co_firstlineno,
+                    "skip_info": {"skip": condition, "reason": reason},
+                    "marker": None,
+                }
             )
             return function
         except Exception as e:
@@ -234,14 +234,14 @@ def test_marker(marker: str) -> Callable[[Callable[..., None]], Callable[..., No
             if marker not in BUILTIN_MARKERS:
                 raise ValueError(f"Marker '{marker}' is not a built-in marker.")
             # Check if the marker is applied to collected test function
-            if not any(test_func == function for test_func, *_ in TESTS):
+            if not any(test_dict["function"] == function for test_dict in TESTS):
                 raise ValueError(
                     f"Test function '{function.__name__}' must be collected before applying marker."
                 )
             # Update the marker information in TESTS list
-            for index, (test_func, file, line, skip_info, _marker) in enumerate(TESTS):
-                if test_func == function:
-                    TESTS[index] = (test_func, file, line, skip_info, marker)
+            for test_dict in TESTS:
+                if test_dict["function"] == function:
+                    test_dict["marker"] = marker
                     break
             return function
         except Exception as e:

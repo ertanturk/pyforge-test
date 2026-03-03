@@ -1,16 +1,31 @@
 # PyForge Test
 
-A lightweight Python unit testing framework built from scratch, designed for simplicity and ease of use. Works seamlessly in any project - no configuration required!
+A lightweight Python unit testing framework for personal projects and learning — zero configuration, decorator-based tests, automatic discovery.
+
+> **Note**: PyForge is designed for personal projects, learning, and small-scale testing. It is **not** a competitor to production-grade frameworks like pytest, unittest, or testing infrastructure in organizations using PyTorch, TensorFlow, or similar platforms.
+
+## When to Use PyForge
+
+✓ Personal projects and hobby development  
+✓ Learning Python testing concepts  
+✓ Quick prototyping without framework overhead  
+✓ Single-module or small-package testing
+
+**Not recommended for:**
+
+- Production applications (use pytest, unittest)
+- Data science pipelines (use pytest + specialized tools)
+- Large organizational projects (use established frameworks)
+- CI/CD pipelines with complex requirements
 
 ## Features
 
-- **Simple Decorator-Based Tests** - Use the `@test` decorator to define tests
-- **Automatic Discovery** - Finds and executes all test files in `tests/` directory
-- **Zero Configuration** - Automatic path setup, works in any project structure
-- **Minimal Dependencies** - Zero external dependencies, pure Python implementation
-- **Clear Reporting** - Human-readable test results and failure messages
-- **Type-Safe** - Full PEP 484 type hints, Google-style docstrings
-- **Python 3.12+** - Modern Python support with latest language features
+- **Decorator-based** — Use `@test` to define tests
+- **Automatic discovery** — Finds and executes all tests in `tests/` directory
+- **Zero configuration** — Works in any project structure
+- **Zero dependencies** — Pure Python, no external packages
+- **Type-safe** — Full PEP 484 type hints and Google-style docstrings
+- **Python 3.12+** — Modern Python support
 
 ## Installation
 
@@ -18,7 +33,7 @@ A lightweight Python unit testing framework built from scratch, designed for sim
 pip install git+https://github.com/ertanturk/pyforge-test.git
 ```
 
-Or from local development:
+Or for development:
 
 ```bash
 pip install -e /path/to/pyforge-test
@@ -29,16 +44,15 @@ pip install -e /path/to/pyforge-test
 ### 1. Create test directory
 
 ```bash
-mkdir -p tests
-touch tests/__init__.py  # Creates empty __init__.py
+mkdir -p tests && touch tests/__init__.py
 ```
 
-### 2. Create a test file
+### 2. Create test file
 
 Create `tests/test_example.py`:
 
 ```python
-"""Example tests for PyForge."""
+"""Example tests."""
 
 from pyforge_test.core.collector import test
 
@@ -57,13 +71,11 @@ def test_string_concat() -> None:
 
 ### 3. Run tests
 
-From your project directory:
-
 ```bash
 pyforge
 ```
 
-Output:
+Expected output:
 
 ```
 Discovering test modules in '/path/to/tests'...
@@ -76,148 +88,61 @@ test_addition: Passed
 test_string_concat: Passed
 ```
 
-## How It Works
+## Test Requirements
 
-PyForge automatically:
+Test files must follow these conventions:
 
-1. **Discovers** - Finds all `test_*.py` files in your `tests/` directory
-2. **Loads** - Executes test modules (triggering `@test` decorators)
-3. **Registers** - Collects all decorated test functions
-4. **Executes** - Runs tests and captures results
-5. **Reports** - Displays pass/fail/error results
-
-## Documentation
-
-For comprehensive usage guide, see [QUICK_START.md](QUICK_START.md).
-
-For future planned features, see [FUTURE_UPDATES.md](FUTURE_UPDATES.md).
+- Location: `tests/` directory
+- Naming: `test_*.py` or `*_test.py`
+- Functions: `test_*()`, no parameters, return type `-> None`
+- Decoration: Use `@test` decorator
+- Assertions: Standard `assert` statements
 
 ## Project Structure
 
 ```
 pyforge-test/
-├── src/
-│   └── pyforge_test/
-│       ├── __init__.py          # Package marker
-│       └── core/
-│           ├── __init__.py
-│           ├── main.py          # CLI entry point
-│           ├── collector.py     # @test decorator
-│           ├── registry.py      # Test registry storage
-│           ├── runner.py        # Test executor
-│           ├── reporter.py      # Results formatter
-│           └── py.typed         # Type checking marker
-├── tests/
-│   ├── __init__.py          # Auto-configures paths
-│   └── test_collector.py    # Example test file
-├── pyproject.toml           # Package configuration
-├── QUICK_START.md           # User guide
-├── README.md                # This file
-└── LICENSE                  # MIT License
-```
-
-## Test File Requirements
-
-Test files must follow these conventions:
-
-✓ Located in `tests/` directory  
-✓ Named `test_*.py` or `*_test.py`  
-✓ Functions start with `test_` prefix  
-✓ Functions have no parameters  
-✓ Functions decorated with `@test`  
-✓ Functions have return type hint `-> None`  
-✓ Use standard `assert` statements
-
-## Usage Examples
-
-### Multiple Test Files
-
-Organize tests by feature:
-
-```
-tests/
-├── __init__.py
-├── test_auth.py
-├── test_database.py
-├── test_api.py
-└── test_integration.py
-```
-
-All files are automatically discovered and executed.
-
-### Test Results
-
-Tests report as:
-
-- **Passed** - Assertion succeeded
-- **Failed** - Assertion failed
-- **Error: <message>** - Unexpected exception
-
-### Different Project Layouts
-
-PyForge works with any project structure:
-
-**Simple structure:**
-
-```
-my-project/
+├── src/pyforge_test/
+│   └── core/
+│       ├── collector.py     # @test decorator
+│       ├── main.py          # CLI entry point
+│       ├── registry.py      # Test registry
+│       ├── runner.py        # Test executor
+│       └── reporter.py      # Results formatter
 ├── tests/
 │   ├── __init__.py
-│   └── test_example.py
+│   └── test_*.py
+├── pyproject.toml
+└── LICENSE
 ```
 
-**With src/ directory:**
+## Running
 
-```
-my-project/
-├── src/
-│   └── my_module.py
-└── tests/
-    ├── __init__.py
-    └── test_my_module.py
-```
-
-**With package structure:**
-
-```
-my-project/
-├── src/
-│   ├── core/
-│   │   └── main.py
-│   └── utils/
-│       └── helpers.py
-└── tests/
-    ├── __init__.py
-    ├── test_core.py
-    └── test_utils.py
-```
-
-## Running Tests
-
-From your project root:
+From project root:
 
 ```bash
-# Using CLI (recommended)
-pyforge
-
-# Using Python module
-python3 -m pyforge_test.core.main
+pyforge                              # Using CLI
+python3 -m pyforge_test.core.main    # Using Python module
 ```
 
-## Development Instructions
+## Documentation
 
-For developers contributing to PyForge, see [.github/instructions/pyforge.instructions.md](.github/instructions/pyforge.instructions.md).
+- [Full Guide](QUICK_START.md) — Comprehensive usage documentation
+- [Planned Features](FUTURE_UPDATES.md) — Roadmap for future releases
+- [Development Guide](.github/instructions/pyforge.instructions.md) — Contributing guidelines
 
-Coding standards:
+## Development
+
+Code standards:
 
 - PEP 484 type hints on all functions
 - Google-style docstrings
-- Exception chaining with `raise ... from e`
-- Proper error handling (no bare `except`)
+- Exception chaining: `raise ... from e`
+- No bare `except` statements
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) file for details
+MIT — See [LICENSE](LICENSE) for details
 
 ## Contributing
 
@@ -225,4 +150,4 @@ Contributions welcome! PyForge aims to be a simple, maintainable testing framewo
 
 ---
 
-**Status**: Alpha (v0.0.1) - Core functionality complete, ready for feedback and improvements.
+**Status**: Alpha (v0.0.1)

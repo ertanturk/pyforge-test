@@ -17,7 +17,7 @@ def test(function: Callable[..., None]) -> Callable[..., None]:
     """
     try:
         # check if the function is already in the TESTS list to avoid duplicates
-        if any(test_func == function for test_func, *_ in TESTS):
+        if any(test_dict["function"] == function for test_dict in TESTS):
             raise ValueError(f"Test function '{function.__name__}' is already collected.")
         # check if the function name starts with "test_"
         if not function.__name__.startswith("test_"):
@@ -29,7 +29,13 @@ def test(function: Callable[..., None]) -> Callable[..., None]:
             raise ValueError(f"Test function '{function.__name__}' must not have parameters.")
         # Add the function to TESTS list with the file name and line number for better debugging
         TESTS.append(
-            (function, function.__code__.co_filename, function.__code__.co_firstlineno, None, None)
+            {
+                "function": function,
+                "filename": function.__code__.co_filename,
+                "line_number": function.__code__.co_firstlineno,
+                "skip_info": None,
+                "marker": None,
+            }
         )
         return function
     except Exception as e:
@@ -64,7 +70,7 @@ def test_parameterized(
         """
         try:
             # Check if the function is already in the TESTS list to avoid duplicates
-            if any(test_func == function for test_func, *_ in TESTS):
+            if any(test_dict["function"] == function for test_dict in TESTS):
                 raise ValueError(f"Test function '{function.__name__}' is already collected.")
             # Check if the function name starts with "test_"
             if not function.__name__.startswith("test_"):
@@ -82,13 +88,13 @@ def test_parameterized(
                 make_test.__name__ = f"{function.__name__}_{case_index}"
 
                 TESTS.append(
-                    (
-                        make_test,
-                        function.__code__.co_filename,
-                        function.__code__.co_firstlineno,
-                        None,
-                        None,
-                    )
+                    {
+                        "function": make_test,
+                        "filename": function.__code__.co_filename,
+                        "line_number": function.__code__.co_firstlineno,
+                        "skip_info": None,
+                        "marker": None,
+                    }
                 )
             return function
         except Exception as e:

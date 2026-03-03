@@ -1,36 +1,80 @@
-# Future Updates - PyForge Test
+# Future Improvements - PyForge Test
 
-## Planned Features and Improvements
+PyForge Test is a personal testing framework built for use in my own projects.
+It is not intended to compete with pytest or other full-scale frameworks.
+The focus is simplicity, control, and long-term maintainability.
 
-### Phase 1: Core Enhancements
+---
 
-- [x] **Parameterized Tests** - Support for running tests with multiple sets of parameters
-- [x] **Test Skipping** - Ability to skip tests conditionally with `@skip` and `@skipif` decorators
-- [x] **Test Markers** - Tag tests with markers (e.g., `@marker("slow")`) for selective execution
+## Phase 1 – Core Stability & CLI UX (Required Before Everything)
 
-### Phase 2: Reporting & Logging
+These improvements make the framework reliable and pleasant to use.
 
-- [ ] **Detailed Error Messages** - Enhanced traceback information with full context
-- [ ] **Test Coverage** - Integration with coverage analysis tools
-- [ ] **JSON Report Output** - Export test results in JSON format for CI/CD integration
-- [ ] **Verbose Logging** - Debug-level logging for test execution
+- [ ] Structured Result Objects (separate execution from reporting)
+- [ ] Centralized Stats Tracker (passed, failed, skipped, errors, duration)
+- [ ] Proper Exit Codes (0 = success, 1 = failures, 2 = internal error)
+- [ ] Verbosity Levels (`-q`, default, `-v`)
+- [ ] Selective Running
+  - File path filtering
+  - `-k` substring filtering
+- [ ] Colorized Output (with `--no-color`)
+- [ ] Fail-Fast Option (`--fail-fast`)
+- [ ] Per-Test Duration Tracking
 
-### Phase 3: Advanced Features
+Goal:
+Stable, predictable behavior suitable for daily development.
 
-- [ ] **Parallel Test Execution** - Run multiple tests concurrently for faster feedback
-- [ ] **Test Timeouts** - Limit execution time per test with configurable timeouts
-- [ ] **Mocking Support** - Built-in utilities for mocking and patching
+---
 
-## Version Roadmap
+## Phase 2 – Developer Efficiency
 
-- **v0.1.0** - Core framework with basic test collection and execution
-- **v0.2.0** - Fixtures, skipping, and markers support
-- **v0.3.0** - Enhanced reporting (JSON, HTML)
-- **v1.0.0** - Stable release with full documentation and examples
+Add only what improves productivity in real projects.
 
-## Feedback & Suggestions
+- [ ] JSON Report Output (for automation or CI use)
+- [ ] Marker-Based Execution (`-m slow`)
+- [ ] Max Failures Option (`--max-failures N`)
+- [ ] Improved Traceback Formatting (clean, readable errors)
+- [ ] Basic Fixture Injection System (minimal and explicit)
+- [ ] `--list` / `--collect-only` mode
 
-Have ideas for new features? Please open an issue on GitHub to discuss potential improvements.
-discuss potential improvements.
+Goal:
+Reduce friction during debugging and larger test suites.
+
+---
+
+## Phase 3 – Scaling (Only If Needed)
+
+These features will only be implemented if future projects require them.
+
+- [ ] Parallel Test Execution (process-based)
+- [ ] Configurable Test Timeouts
+- [ ] Randomized Test Order with Seed Control
+
+These add complexity and will not be implemented unless there is a real need.
+
+---
+
+## Design Principles
+
+- Keep the surface area small.
+- Avoid unnecessary abstraction.
+- Do not reimplement full pytest functionality.
+- Prefer clarity over cleverness.
+- Every new feature must solve a real problem in an actual project.
+
+---
+
+## Versioning Philosophy
+
+This project follows pragmatic versioning:
+
+- v0.x → Internal evolution
+- v1.0.0 → Only after it has been used successfully in multiple real projects without architectural changes
+
+No rushed 1.0 release.
+Stability comes from usage, not ambition.hanges
+
+No rushed 1.0 release.
+Stability comes from usage, not ambition.
 
 discuss potential improvements.

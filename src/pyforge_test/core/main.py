@@ -4,13 +4,14 @@ Executes collected tests and displays results.
 Discovers and loads all test files from the tests directory.
 """
 
+import argparse
 import contextlib
 import importlib.util
 import sys
 import traceback
 from pathlib import Path
 
-from .reporter import report
+from .reporter import VERBOSITY_NORMAL, VERBOSITY_QUIET, VERBOSITY_VERBOSE, report
 from .runner import execute
 
 # Set up path for tests package import
@@ -121,9 +122,65 @@ def discover_and_load_tests(project_root: Path) -> int:
 def main() -> int:
     """Main entry point for PyForge test runner.
 
+    Supports verbosity levels, fail-fast option, and selective running:
+    - Default: Normal output
+    - -q/--quiet: Only show summary and failures
+    - -v/--verbose: Show detailed info with tracebacks
+    - --fail-fast: Stop on first failure
+    - -k: Substring filtering on test names
+    - FILES: File paths to run tests from (positional arguments)
+
     Returns:
         int: Exit code (0 for success, 1 for failure).
     """
+    # Parse CLI arguments
+    parser = argparse.ArgumentParser(
+        description="PyForge - Lightweight Python testing framework",
+        epilog="Examples:\n"
+        "  pyforge                    # Run all tests\n"
+        "  pyforge -k test_basic      # Run tests with 'test_basic' in name\n"
+        "  pyforge test_name.py       # Run tests from specific file(s)\n"
+        "  pyforge -k basic -v        # Verbose output for matching tests",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Quiet mode: only show summary and failures",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Verbose mode: show detailed info with tracebacks",
+    )
+    parser.add_argument(
+        "--fail-fast",
+        action="store_true",
+        help="Stop execution at first failure",
+    )
+    parser.add_argument(
+        "-k",
+        dest="name_pattern",
+        default=None,
+        help="Substring filter: run tests with this string in their name",
+    )
+    parser.add_argument(
+        "files",
+        nargs="*",
+        help="File paths to run tests from (supports partial paths and filenames)",
+    )
+    args = parser.parse_args()
+
+    # Determine verbosity level
+    if args.quiet:
+        verbosity = VERBOSITY_QUIET
+    elif args.verbose:
+        verbosity = VERBOSITY_VERBOSE
+    else:
+        verbosity = VERBOSITY_NORMAL
+
     try:
         # Find project root (where tests/ directory is located)
         project_root: Path = _find_project_root()
@@ -139,17 +196,22 @@ def main() -> int:
         if modules_loaded == 0:
             return 0
 
-        print(f"\nLoaded {modules_loaded} test module(s).\n")
+        if verbosity >= VERBOSITY_NORMAL:
+            print(f"\nLoaded {modules_loaded} test module(s).\n")
 
-        # Execute collected tests
-        results = execute()
+        # Execute collected tests with filters
+        results, summary = execute(
+            fail_fast=args.fail_fast,
+            name_pattern=args.name_pattern,
+            file_patterns=args.files if args.files else None,
+        )
 
         # Generate and display report
-        output: str = report(results)  # pyright: ignore[reportArgumentType]
+        output: str = report(results, summary, verbosity=verbosity)
         print(output)
 
-        # Return 1 if any tests failed (status is not "passed")
-        has_failures: bool = any(result[1] != "passed" for result in results)
+        # Return 1 if any tests failed or errors occurred
+        has_failures: bool = int(summary.get("failed", 0)) > 0 or int(summary.get("errors", 0)) > 0
         return 1 if has_failures else 0
 
     except FileNotFoundError as e:
@@ -157,7 +219,6 @@ def main() -> int:
         return 1
     except Exception as e:
         print(f"Unexpected error: {type(e).__name__}: {e}")
-
         traceback.print_exc()
         return 1
 

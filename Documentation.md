@@ -31,7 +31,17 @@ def test_addition() -> None:
 ### 3. Run Tests
 
 ```bash
+# Run all tests
 pyforge
+
+# Run specific tests by name
+pyforge -k basic
+
+# Run from specific file
+pyforge test_example.py
+
+# Verbose output with fail-fast
+pyforge -v --fail-fast
 ```
 
 ## Core Features
@@ -264,14 +274,80 @@ my-project/
 
 ## Running Tests
 
-### Command Line
+### Command Line Interface
+
+PyForge supports verbosity levels, selective running, and execution control:
 
 ```bash
-# Run all tests in tests/ directory
+# Run all tests
 pyforge
 
-# Run specific test file (alternative)
-python -m pyforge_test tests/test_example.py
+# Quiet mode: only show summary and failures
+pyforge -q
+pyforge --quiet
+
+# Verbose mode: show detailed info with tracebacks
+pyforge -v
+pyforge --verbose
+
+# Stop at first failure
+pyforge --fail-fast
+
+# Combine options
+pyforge -v --fail-fast
+```
+
+### Selective Running
+
+#### Substring Filtering (`-k`)
+
+Run tests matching a substring in their name:
+
+```bash
+# Run tests containing "basic" in the name
+pyforge -k basic
+
+# Run tests containing "api" with verbose output
+pyforge -k api -v
+
+# Combine with other options
+pyforge -k test_uppercase --fail-fast
+```
+
+#### File Path Filtering
+
+Run tests from specific files using positional arguments:
+
+```bash
+# Run all tests from a specific file
+pyforge test_example.py
+
+# Run from multiple files
+pyforge test_example.py test_utils.py
+
+# Use partial paths to match multiple files
+pyforge test_
+```
+
+#### Combined Filtering
+
+Use both `-k` and file paths together:
+
+```bash
+# Run tests with "api" in the name from test_integration.py
+pyforge -k api test_integration.py
+
+# Run uppercase tests from any test_*.py file with verbose output
+pyforge -k uppercase test_ -v
+
+# Run tests with "db" in name from specific files with fail-fast
+pyforge -k db test_database.py test_models.py --fail-fast
+```
+
+### Help Output
+
+```bash
+pyforge --help
 ```
 
 ### Auto-Discovery
@@ -281,33 +357,95 @@ PyForge automatically:
 1. Finds `tests/` directory in current/parent directory
 2. Loads all `test*.py` files
 3. Collects functions decorated with `@test`
-4. Sorts by marker priority
-5. Executes and reports results
+4. Filters by criteria (if provided)
+5. Sorts by marker priority
+6. Executes and reports results
 
 ### Output Format
 
 ```
-Executing 8 test(s).
+PyForge Test Results
+------------------------------------------------------------------------
 
-File: /path/to/tests/test_example.py
-  Line 10: test_basic_arithmetic - ✅ Passed
-  Line 15: test_uppercase_0 - ✅ Passed
-  Line 15: test_uppercase_1 - ✅ Passed
-  Line 15: test_uppercase_2 - ✅ Passed
-  Line 25: test_api_endpoint - ✅ Passed
-  Line 33: test_large_computation - ✅ Passed
-  Line 42: test_local_only - ⏭️  Skipped: Skip in CI environment
-  Line 50: test_broken_feature - ⏭️  Skipped: Temporarily disabled
+test_example.py
+  PASSED test_basic_arithmetic (Line 10)
+  PASSED test_uppercase_0 (Line 15)
+  PASSED test_uppercase_1 (Line 15)
+  PASSED test_uppercase_2 (Line 15)
+  ERROR test_api_endpoint (Line 25): name 'api_client' is not defined
+  PASSED test_large_computation (Line 33)
+  SKIPPED test_local_only (Line 42): Skip in CI environment
+  SKIPPED test_broken_feature (Line 50): Temporarily disabled
+
+------------------------------------------------------------------------
+Summary: PASSED: 5/8  FAILED: 0/8  SKIPPED: 2/8  ERRORS: 1/8
+Took 156 ms to execute all tests
+------------------------------------------------------------------------
 ```
 
 ## Test Results
 
-- **✅ Passed** - Assertion succeeded
-- **❌ Failed: <message>** - AssertionError
-- **⚠️ Error: <message>** - Unexpected exception
-- **⏭️ Skipped: <reason>** - Test skipped
+Test results are displayed with color coding:
+
+- **PASSED** (Green) - Assertion succeeded
+- **FAILED** (Red) - AssertionError with message
+- **ERROR** (Orange) - Unexpected exception with message
+- **SKIPPED** (Blue) - Test skipped with reason
+
+Each result shows:
+
+- Status indicator (colored)
+- Test function name
+- Line number where test is defined
+- Error message (if applicable)
+- Traceback (in verbose mode only)
 
 ## API Reference
+
+### CLI Options
+
+```
+usage: pyforge [-h] [-q] [-v] [--fail-fast] [-k NAME_PATTERN] [files ...]
+
+positional arguments:
+  files            File paths to run tests from (supports partial paths and filenames)
+
+options:
+  -h, --help       show this help message and exit
+  -q, --quiet      Quiet mode: only show summary and failures
+  -v, --verbose    Verbose mode: show detailed info with tracebacks
+  --fail-fast      Stop execution at first failure
+  -k NAME_PATTERN  Substring filter: run tests with this string in their name
+```
+
+### CLI Option Details
+
+| Option           | Short | Description                      | Example                   |
+| ---------------- | ----- | -------------------------------- | ------------------------- |
+| `--help`         | `-h`  | Show help message                | `pyforge -h`              |
+| `--quiet`        | `-q`  | Only show summary and failures   | `pyforge -q`              |
+| `--verbose`      | `-v`  | Show tracebacks and details      | `pyforge -v`              |
+| `--fail-fast`    |       | Stop at first failure            | `pyforge --fail-fast`     |
+| `--name-pattern` | `-k`  | Filter by test name substring    | `pyforge -k basic`        |
+| `files`          |       | Filter by file path (positional) | `pyforge test_example.py` |
+
+### Combining Options
+
+Options can be combined freely:
+
+```bash
+# Verbose output with fail-fast
+pyforge -v --fail-fast
+
+# Quiet mode for CI environments
+pyforge -q
+
+# Filter by name and file with verbose output
+pyforge -k api test_integration.py -v
+
+# Multiple files with name filter
+pyforge -k test_ test_utils.py test_models.py --fail-fast
+```
 
 ### Decorators
 

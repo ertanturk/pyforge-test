@@ -10,14 +10,13 @@ The focus is simplicity, control, and long-term maintainability.
 
 These improvements make the framework reliable and pleasant to use.
 
-- [ ] Structured Result Objects (separate execution from reporting)
 - [ ] Centralized Stats Tracker (passed, failed, skipped, errors, duration)
 - [ ] Proper Exit Codes (0 = success, 1 = failures, 2 = internal error)
 - [ ] Verbosity Levels (`-q`, default, `-v`)
 - [ ] Selective Running
   - File path filtering
   - `-k` substring filtering
-- [ ] Colorized Output (with `--no-color`)
+- [ ] Colorized Output
 - [ ] Fail-Fast Option (`--fail-fast`)
 - [ ] Per-Test Duration Tracking
 
@@ -75,6 +74,15 @@ No rushed 1.0 release.
 Stability comes from usage, not ambition.hanges
 
 No rushed 1.0 release.
+Stability comes from usage, not ambition.
+
+discuss potential improvements.
+
+Stability comes from usage, not ambition.
+
+discuss potential improvements.
+.
+
 Stability comes from usage, not ambition.
 
 discuss potential improvements.

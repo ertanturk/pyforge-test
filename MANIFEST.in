@@ -1,4 +1,5 @@
 include README.md
 include LICENSE
-include QUICK_START.md
-recursive-include src/pyforge_test *.py py.typed
+include Documentation.md
+recursive-include src/pyforge_test *.py
+recursive-include src/pyforge_test py.typed

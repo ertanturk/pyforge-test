@@ -30,6 +30,7 @@ class ResultDict(TypedDict):
         line_number: The line number where the test is defined.
         skip_info: Dictionary containing skip information and reason.
         marker: The test marker (e.g., 'slow', 'integration', 'wip').
+        traceback: The traceback string for failed/error tests, None otherwise.
     """
 
     name: str
@@ -38,6 +39,7 @@ class ResultDict(TypedDict):
     line_number: int
     skip_info: dict[str, Any] | None
     marker: str | None
+    traceback: str | None
 
 
 TESTS: list[TestCase] = []

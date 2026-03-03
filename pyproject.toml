@@ -6,17 +6,18 @@ build-backend = "setuptools.build_meta"
 name = "pyforge-test"
 version = "0.1.0"
 description = "A lightweight Python unit testing framework with decorator-based test collection and execution."
-readme = "Documentation.md"
+readme = "README.md"
 requires-python = ">=3.12"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 keywords = ["testing", "framework", "unittest", "pytest"]
 
 authors = [
-    { name = "Ertan Tunç Türk", email = "ertan@example.com" }
+    { name = "Ertan Tunç Türk", email = "ertantuncturk61@gmail.com" }
 ]
 
 maintainers = [
-    { name = "Ertan Tunç Türk", email = "ertan@example.com" }
+    { name = "Ertan Tunç Türk", email = "ertantuncturk61@gmail.com" }
 ]
 
 dependencies = []
@@ -25,7 +26,6 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
@@ -41,6 +41,7 @@ Homepage = "https://github.com/ertanturk/pyforge-test"
 Documentation = "https://github.com/ertanturk/pyforge-test/blob/main/Documentation.md"
 Repository = "https://github.com/ertanturk/pyforge-test.git"
 Issues = "https://github.com/ertanturk/pyforge-test/issues"
+Changelog = "https://github.com/ertanturk/pyforge-test/releases"
 
 [project.scripts]
 pyforge = "pyforge_test.core.main:main"

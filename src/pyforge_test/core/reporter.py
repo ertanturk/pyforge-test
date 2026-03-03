@@ -3,6 +3,8 @@
 Provides functionality to format and display test results.
 """
 
+import os
+import re
 import sys
 
 from .registry import ResultDict
@@ -20,8 +22,12 @@ COLORS = {
     "orange": "\033[1;33m",  # Bold yellow/orange for ERROR
     "white": "\033[1;97m",  # Bold bright white
     "gray": "\033[90m",  # Dim gray for separators
+    "cyan": "\033[1;96m",  # Bold bright cyan for highlighted code lines
     "reset": "\033[0m",  # Reset to default
 }
+
+# Compiled regex for parsing traceback "  File ..." lines
+_FILE_LINE_RE: re.Pattern[str] = re.compile(r'  File "([^"]+)", line (\d+), in (.+)')
 
 
 def _format_duration(duration_str: str) -> str:
@@ -160,6 +166,164 @@ def report(results: list[ResultDict], summary: dict[str, int | str], verbosity: 
         raise RuntimeError(f"An error occurred while generating the report: {e}") from e
 
 
+def _shorten_path(filepath: str) -> str:
+    """Shorten a file path to be relative to CWD when possible.
+
+    Args:
+        filepath (str): Absolute or relative file path.
+
+    Returns:
+        str: Relative path from CWD, or a shortened version using the last
+            two path components as a fallback.
+    """
+    try:
+        rel = os.path.relpath(filepath)
+        # Only keep relative if it doesn't go more than one level above CWD
+        if not rel.startswith(f"..{os.sep}..{os.sep}"):
+            return rel
+    except ValueError:
+        pass  # Windows drive-letter mismatch edge case
+    # Fallback: last 2 path components
+    parts = [p for p in filepath.replace("\\", "/").split("/") if p]
+    return "/".join(parts[-2:]) if len(parts) > 2 else filepath
+
+
+def _parse_traceback(
+    tb_str: str,
+) -> tuple[list[tuple[str, int, str, str | None]], str]:
+    """Parse a traceback string into structured frames and exception text.
+
+    Args:
+        tb_str (str): Raw traceback string from the traceback module.
+
+    Returns:
+        tuple[list[tuple[str, int, str, str | None]], str]: A tuple of
+            (frames, exception_string). Each frame is a
+            (filename, lineno, funcname, code_snippet) tuple, where
+            code_snippet may be None if absent.
+    """
+    frames: list[tuple[str, int, str, str | None]] = []
+    exception_str = ""
+    if not tb_str:
+        return frames, exception_str
+
+    lines = tb_str.strip().splitlines()
+    i = 0
+    # Skip "Traceback (most recent call last):" header
+    if lines and lines[0].startswith("Traceback"):
+        i = 1
+
+    while i < len(lines):
+        line = lines[i]
+        match = _FILE_LINE_RE.match(line)
+        if match:
+            filename = match.group(1)
+            lineno = int(match.group(2))
+            funcname = match.group(3)
+            # The following line may be an inline code snippet
+            code: str | None = None
+            if i + 1 < len(lines):
+                next_line = lines[i + 1]
+                if next_line.startswith("    ") and not _FILE_LINE_RE.match(next_line):
+                    code = next_line.strip()
+                    i += 1
+            frames.append((filename, lineno, funcname, code))
+        elif line and not line.startswith((" ", "\t")):
+            # Non-indented line after frames → exception type / message
+            exception_str = "\n".join(lines[i:])
+            break
+        i += 1
+
+    return frames, exception_str
+
+
+def _format_traceback_location(tb_str: str) -> str:
+    """Extract the last frame and return a compact location string.
+
+    Used in normal verbosity mode to show exactly where a test failed
+    without printing the full traceback.
+
+    Args:
+        tb_str (str): Raw traceback string.
+
+    Returns:
+        str: Compact location line (e.g., '    → tests/file.py:10  in func'),
+            or an empty string if parsing fails.
+    """
+    frames, _ = _parse_traceback(tb_str)
+    if not frames:
+        return ""
+    filepath, lineno, funcname, _ = frames[-1]
+    short = _shorten_path(filepath)
+    return (
+        f"    {COLORS['gray']}→ "
+        f"{COLORS['white']}{short}"
+        f"{COLORS['gray']}:{lineno}"
+        f"  in {funcname}{COLORS['reset']}"
+    )
+
+
+def _format_traceback_block(tb_str: str) -> str:
+    """Format a complete traceback with ANSI colors for verbose mode.
+
+    The last (failing) frame and its code snippet are highlighted in
+    distinct colors; earlier frames are dimmed. The exception type is
+    rendered in red and the message in gray.
+
+    Args:
+        tb_str (str): Raw traceback string.
+
+    Returns:
+        str: Fully formatted and colorized traceback block, or an empty
+            string if the input cannot be parsed.
+    """
+    frames, exception_str = _parse_traceback(tb_str)
+    if not frames and not exception_str:
+        return ""
+
+    indent = "    "
+    lines: list[str] = []
+
+    # Traceback header
+    lines.append(f"{indent}{COLORS['gray']}Traceback (most recent call last):{COLORS['reset']}")
+
+    total = len(frames)
+    for idx, (filepath, lineno, funcname, code) in enumerate(frames):
+        is_last = idx == total - 1
+        short = _shorten_path(filepath)
+        # Highlight the failing frame; dim earlier frames
+        frame_color = COLORS["white"] if is_last else COLORS["gray"]
+        lines.append(
+            f'{indent}  {frame_color}File "{short}", line {lineno}, in {funcname}{COLORS["reset"]}'
+        )
+        if code:
+            code_color = COLORS["cyan"] if is_last else COLORS["gray"]
+            lines.append(f"{indent}      {code_color}{code}{COLORS['reset']}")
+
+    # Exception type and message
+    if exception_str:
+        # Split "ExcType: message" on the first colon only
+        colon_idx = exception_str.find(":")
+        if colon_idx != -1 and "\n" not in exception_str[:colon_idx]:
+            exc_type = exception_str[:colon_idx]
+            exc_rest = exception_str[colon_idx:]
+        else:
+            exc_type = exception_str.splitlines()[0]
+            exc_rest = ""
+
+        exc_rest_lines = exc_rest.splitlines()
+        first_rest = exc_rest_lines[0] if exc_rest_lines else ""
+        lines.append(
+            f"{indent}{COLORS['red']}{exc_type}{COLORS['reset']}"
+            f"{COLORS['gray']}{first_rest}{COLORS['reset']}"
+        )
+        for extra in exc_rest_lines[1:]:
+            if extra:
+                lines.append(f"{indent}  {COLORS['gray']}{extra}{COLORS['reset']}")
+
+    return "\n".join(lines)
+
+
 def _format_test_result(result: ResultDict, verbosity: int = 1) -> str:
     """Format a single test result with proper symbols and colors.
 
@@ -195,12 +359,15 @@ def _format_test_result(result: ResultDict, verbosity: int = 1) -> str:
         error_msg = result_status.replace("Error: ", "")
         result_line = f"  {colored_status} {test_name} (Line {line}): {error_msg}"
 
-    # Add traceback in verbose mode with proper indentation
-    if verbosity == VERBOSITY_VERBOSE and traceback_str:
-        tb_lines = traceback_str.rstrip().split("\n")
-        formatted_tb = "\n".join(
-            f"    {COLORS['gray']}{tb_line}{COLORS['reset']}" for tb_line in tb_lines
-        )
-        result_line += f"\n{formatted_tb}"
+    # Add location (normal) or full colorized traceback (verbose) for failures/errors
+    if traceback_str:
+        if verbosity == VERBOSITY_NORMAL:
+            location = _format_traceback_location(traceback_str)
+            if location:
+                result_line += f"\n{location}"
+        elif verbosity == VERBOSITY_VERBOSE:
+            tb_block = _format_traceback_block(traceback_str)
+            if tb_block:
+                result_line += f"\n{tb_block}"
 
     return result_line

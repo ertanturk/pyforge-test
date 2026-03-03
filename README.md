@@ -30,10 +30,16 @@ A lightweight Python unit testing framework for personal projects and learning â
 ## Installation
 
 ```bash
+pip install pyforge-test
+```
+
+Or install the latest development version directly from GitHub:
+
+```bash
 pip install git+https://github.com/ertanturk/pyforge-test.git
 ```
 
-Or for development:
+Or for local development:
 
 ```bash
 pip install -e /path/to/pyforge-test
@@ -150,4 +156,4 @@ Contributions welcome! PyForge aims to be a simple, maintainable testing framewo
 
 ---
 
-**Status**: Alpha (v0.0.1)
+**Status**: Alpha (v0.1.0)

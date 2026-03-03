@@ -10,15 +10,14 @@ The focus is simplicity, control, and long-term maintainability.
 
 These improvements make the framework reliable and pleasant to use.
 
-- [ ] Centralized Stats Tracker (passed, failed, skipped, errors, duration)
-- [ ] Proper Exit Codes (0 = success, 1 = failures, 2 = internal error)
-- [ ] Verbosity Levels (`-q`, default, `-v`)
-- [ ] Selective Running
+- [x] Centralized Stats Tracker (passed, failed, skipped, errors, duration)
+- [x] Proper Exit Codes (0 = success, 1 = failures, 2 = internal error)
+- [x] Verbosity Levels (`-q`, default, `-v`)
+- [x] Selective Running
   - File path filtering
   - `-k` substring filtering
-- [ ] Colorized Output
-- [ ] Fail-Fast Option (`--fail-fast`)
-- [ ] Per-Test Duration Tracking
+- [x] Colorized Output
+- [x] Fail-Fast Option (`--fail-fast`)
 
 Goal:
 Stable, predictable behavior suitable for daily development.
@@ -81,6 +80,60 @@ discuss potential improvements.
 Stability comes from usage, not ambition.
 
 discuss potential improvements.
+.
+
+Stability comes from usage, not ambition.
+
+discuss potential improvements.
+ts.
+.
+
+Stability comes from usage, not ambition.
+
+discuss potential improvements.
+ts.
+.
+
+Stability comes from usage, not ambition.
+
+discuss potential improvements.
+ts.
+.
+
+Stability comes from usage, not ambition.
+
+discuss potential improvements.
+ts.
+.
+
+Stability comes from usage, not ambition.
+
+discuss potential improvements.
+ts.
+.
+
+Stability comes from usage, not ambition.
+
+discuss potential improvements.
+ts.
+.
+
+Stability comes from usage, not ambition.
+
+discuss potential improvements.
+ts.
+.
+
+Stability comes from usage, not ambition.
+
+discuss potential improvements.
+ts.
+.
+
+Stability comes from usage, not ambition.
+
+discuss potential improvements.
+ts.
 .
 
 Stability comes from usage, not ambition.

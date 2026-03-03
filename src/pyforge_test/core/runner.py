@@ -1,8 +1,33 @@
+import os
 import time
 import traceback
 from datetime import timedelta
 
 from .registry import TESTS, ResultDict, TestCase
+
+# Path segment identifying pyforge internal core modules (filtered from user-facing tracebacks)
+_PYFORGE_CORE: str = os.path.join("pyforge_test", "core")
+
+
+def _clean_traceback(exc: BaseException) -> str:
+    """Format a clean traceback, filtering out pyforge internal frames.
+
+    Removes framework-internal frames so users only see code relevant
+    to their test failures.
+
+    Args:
+        exc (BaseException): The exception whose traceback to format.
+
+    Returns:
+        str: Formatted traceback string with internal pyforge frames removed.
+    """
+    te = traceback.TracebackException.from_exception(exc)
+    filtered = [frame for frame in te.stack if _PYFORGE_CORE not in frame.filename]
+    # Preserve at least the last frame if all frames were internal
+    if not filtered and te.stack:
+        filtered = list(te.stack[-1:])
+    te.stack = traceback.StackSummary.from_list(filtered)
+    return "".join(te.format())
 
 
 def _filter_tests(
@@ -150,7 +175,7 @@ def execute(
                 pass_count += 1
 
             except AssertionError as e:
-                tb_str = traceback.format_exc()
+                tb_str = _clean_traceback(e)
                 results.append(
                     {
                         "name": test_func.__name__,
@@ -166,7 +191,7 @@ def execute(
                 if fail_fast:
                     break
             except Exception as e:
-                tb_str = traceback.format_exc()
+                tb_str = _clean_traceback(e)
                 results.append(
                     {
                         "name": test_func.__name__,

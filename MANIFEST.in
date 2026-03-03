@@ -1,5 +1,10 @@
 include README.md
 include LICENSE
 include Documentation.md
+include FUTURE_UPDATES.md
+include pyproject.toml
 recursive-include src/pyforge_test *.py
 recursive-include src/pyforge_test py.typed
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *.egg-info

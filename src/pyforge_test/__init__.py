@@ -15,6 +15,7 @@ from .core.collector import (
 
 __all__ = [
     "BUILTIN_MARKERS",
+    "__version__",
     "test",
     "test_marker",
     "test_parameterized",

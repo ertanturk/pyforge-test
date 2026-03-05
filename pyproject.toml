@@ -2,9 +2,12 @@
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.dynamic]
+version = { attr = "pyforge_test._version.__version__" }
+
 [project]
 name = "pyforge-test"
-version = "0.3.0"
+dynamic = ["version"]
 description = "A lightweight Python unit testing framework with decorator-based test collection and execution."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -97,7 +100,7 @@ indent-style = "space"
 
 [tool.pyright]
 include = ["src/pyforge_test"]
-exclude = ["**/node_modules", "**/__pycache__", ".venv", "src/pyforge_test/_version.py"]
+exclude = ["**/node_modules", "**/__pycache__", ".venv"]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
 reportMissingImports = true

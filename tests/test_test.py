@@ -2,6 +2,7 @@
 
 import os
 import time
+from types import SimpleNamespace
 
 from pyforge_test import (
     test,
@@ -11,13 +12,44 @@ from pyforge_test import (
     test_skipif,
 )
 
+# ---------------------------------------------------------------------------
+# Constants & stubs used by demo tests
+# ---------------------------------------------------------------------------
+
+EXPECTED_HALF_OF_TEN = 5
+EXPECTED_THREE_SQUARED = 9
+HTTP_OK = 200
+
+
+def _mock_api_get(endpoint: str) -> SimpleNamespace:
+    """Return a fake HTTP response for demonstration purposes."""
+    return SimpleNamespace(status_code=HTTP_OK, body=f"OK from {endpoint}")
+
+
+api_client: SimpleNamespace = SimpleNamespace(get=_mock_api_get)
+
+
+def local_resource_available() -> bool:
+    """Stub that checks whether a local-only resource is reachable."""
+    return True
+
+
+def broken_function() -> str:
+    """Stub for a feature that is not yet implemented."""
+    return "broken"
+
+
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
+
 
 # Unmarked test (Priority 0)
 @test
 def test_basic_arithmetic() -> None:
     """Fast unit test."""
-    assert 10 / 2 == 5
-    assert 3**2 == 9
+    assert EXPECTED_HALF_OF_TEN == 10 / 2
+    assert EXPECTED_THREE_SQUARED == 3**2
 
 
 # Parameterized test
@@ -39,7 +71,7 @@ def test_uppercase(input_str: str, expected: str) -> None:
 def test_api_endpoint() -> None:
     """Test external API."""
     response = api_client.get("/health")
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
 
 
 # Slow test (Priority 2)

@@ -53,6 +53,9 @@ dist/
 *.tar.gz
 *.zip
 
+# Auto-generated version file (setuptools-scm)
+src/pyforge_test/_version.py
+
 # ==================================================
 # Coverage & Test Reports
 # ==================================================

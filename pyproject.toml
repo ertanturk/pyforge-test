@@ -1,9 +1,9 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=68", "wheel", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools.dynamic]
-version = { attr = "pyforge_test.__version__" }
+[tool.setuptools_scm]
+version_file = "src/pyforge_test/_version.py"
 
 [project]
 name = "pyforge-test"
@@ -100,7 +100,7 @@ indent-style = "space"
 
 [tool.pyright]
 include = ["src/pyforge_test"]
-exclude = ["**/node_modules", "**/__pycache__", ".venv"]
+exclude = ["**/node_modules", "**/__pycache__", ".venv", "src/pyforge_test/_version.py"]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
 reportMissingImports = true

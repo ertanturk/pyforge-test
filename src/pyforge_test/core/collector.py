@@ -1,3 +1,8 @@
+"""Test collector module for PyForge.
+
+Provides decorators for collecting and configuring test functions.
+"""
+
 from collections.abc import Callable
 from typing import Any
 
@@ -25,7 +30,7 @@ def test(function: Callable[..., None]) -> Callable[..., None]:
         # check if the function is valid or not (should be callable and should not have parameters)
         if not callable(function):
             raise ValueError(f"Test function '{function.__name__}' must be callable.")
-        elif function.__code__.co_argcount > 0:
+        if function.__code__.co_argcount > 0:
             raise ValueError(f"Test function '{function.__name__}' must not have parameters.")
         # Add the function to TESTS list with the file name and line number for better debugging
         TESTS.append(

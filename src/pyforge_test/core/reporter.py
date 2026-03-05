@@ -45,6 +45,7 @@ def _format_duration(duration_str: str) -> str:
         seconds_per_minute = 60
         seconds_per_hour = 3600
         milliseconds_per_second = 1000
+        min_seconds_threshold = 1
 
         parts = duration_str.split(":")
         if len(parts) == duration_parts:
@@ -52,16 +53,15 @@ def _format_duration(duration_str: str) -> str:
             total_seconds = (
                 int(hours) * seconds_per_hour + int(minutes) * seconds_per_minute + float(seconds)
             )
-            if total_seconds < 1:
+            if total_seconds < min_seconds_threshold:
                 return f"{total_seconds * milliseconds_per_second:.0f} ms"
-            elif total_seconds < seconds_per_minute:
+            if total_seconds < seconds_per_minute:
                 return f"{total_seconds:.2f} seconds"
-            else:
-                mins = int(total_seconds // seconds_per_minute)
-                secs = total_seconds % seconds_per_minute
-                return f"{mins}m {secs:.2f}s"
+            mins = int(total_seconds // seconds_per_minute)
+            secs = total_seconds % seconds_per_minute
+            return f"{mins}m {secs:.2f}s"
         return duration_str
-    except Exception:
+    except ValueError:
         return duration_str
 
 
@@ -176,6 +176,8 @@ def _shorten_path(filepath: str) -> str:
         str: Relative path from CWD, or a shortened version using the last
             two path components as a fallback.
     """
+    min_path_components = 2
+    max_path_components = 2
     try:
         rel = os.path.relpath(filepath)
         # Only keep relative if it doesn't go more than one level above CWD
@@ -185,7 +187,7 @@ def _shorten_path(filepath: str) -> str:
         pass  # Windows drive-letter mismatch edge case
     # Fallback: last 2 path components
     parts = [p for p in filepath.replace("\\", "/").split("/") if p]
-    return "/".join(parts[-2:]) if len(parts) > 2 else filepath
+    return "/".join(parts[-max_path_components:]) if len(parts) > min_path_components else filepath
 
 
 def _parse_traceback(

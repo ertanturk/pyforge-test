@@ -1,3 +1,8 @@
+"""Test runner module for PyForge.
+
+Executes collected tests and handles test result management.
+"""
+
 import os
 import time
 import traceback

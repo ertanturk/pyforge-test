@@ -1,3 +1,8 @@
+"""Registry module for PyForge.
+
+Defines data structures for test case and result storage.
+"""
+
 from collections.abc import Callable
 from typing import Any, TypedDict
 

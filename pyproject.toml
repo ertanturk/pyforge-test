@@ -2,15 +2,17 @@
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.dynamic]
+version = { attr = "pyforge_test.__version__" }
+
 [project]
 name = "pyforge-test"
 version = "0.1.0"
 description = "A lightweight Python unit testing framework with decorator-based test collection and execution."
 readme = "README.md"
 requires-python = ">=3.12"
-license = "MIT"
-license-files = ["LICENSE"]
-keywords = ["testing", "framework", "unittest", "pytest"]
+license = { text = "MIT" }
+keywords = ["testing", "framework", "unittest", "pytest", "decorator", "lightweight"]
 
 authors = [
     { name = "Ertan Tunç Türk", email = "ertantuncturk61@gmail.com" }
@@ -26,11 +28,16 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
+    "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Testing",
     "Typing :: Typed",
@@ -38,7 +45,7 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/ertanturk/pyforge-test"
-Documentation = "https://github.com/ertanturk/pyforge-test/blob/main/Documentation.md"
+Documentation = "https://github.com/ertanturk/pyforge-test/blob/main/docs/Documentation.md"
 Repository = "https://github.com/ertanturk/pyforge-test.git"
 Issues = "https://github.com/ertanturk/pyforge-test/issues"
 Changelog = "https://github.com/ertanturk/pyforge-test/releases"
@@ -96,9 +103,6 @@ include = ["src/pyforge_test"]
 exclude = ["**/node_modules", "**/__pycache__", ".venv"]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
-strictParameterNoneDefault = true
-strictPropertyInitialization = true
-strictDictionaryInference = true
 reportMissingImports = true
 reportMissingTypeStubs = false
 reportUnusedImport = "warning"
@@ -126,3 +130,31 @@ exclude_lines = [
     "if __name__ == .__main__.:",
 ]
 precision = 2
+
+# ----------------------
+# Pylint Configuration
+# ----------------------
+
+[tool.pylint.messages]
+
+[tool.pylint."messages control"]
+disable = [
+    "too-many-locals",  # Complex functions may legitimately have many local vars
+    "too-many-arguments",  # Refactor if needed
+    "duplicate-code",  # Allow duplicate logic in independent modules
+    "fixme",  # Allow TODO, FIXME comments
+]
+
+[tool.pylint.design]
+max-locals = 25
+max-args = 8
+
+[tool.pylint.format]
+max-line-length = 100
+indent-string = "    "
+
+[tool.pylint.basic]
+bad-names = ["l", "O", "I"]
+
+[tool.pylint.variables]
+allow-global-unused-variables = false

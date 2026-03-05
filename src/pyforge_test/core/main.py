@@ -5,7 +5,6 @@ Discovers and loads all test files from the tests directory.
 """
 
 import argparse
-import contextlib
 import importlib.util
 import sys
 import traceback
@@ -17,8 +16,6 @@ from .runner import execute
 # Set up path for tests package import
 _pyforge_root: Path = Path(__file__).parent.parent.parent.parent  # project root
 sys.path.insert(0, str(_pyforge_root))
-with contextlib.suppress(ImportError):
-    import tests  # pyright: ignore[reportUnusedImport] # noqa: F401
 
 
 def _find_project_root() -> Path:
@@ -217,7 +214,7 @@ def main() -> int:
     except FileNotFoundError as e:
         print(f"Error: {e}")
         return 1
-    except Exception as e:
+    except (ImportError, RuntimeError) as e:
         print(f"Unexpected error: {type(e).__name__}: {e}")
         traceback.print_exc()
         return 1

@@ -7,6 +7,10 @@
 .directory
 .Trash-*
 .nfs*
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
 
 # ==================================================
 # Python Bytecode & Caches
@@ -15,6 +19,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 
 # Tooling caches
 .mypy_cache/
@@ -23,12 +28,17 @@ __pycache__/
 .pyre/
 .pytype/
 .hypothesis/
+.pylint-cache/
 
 # ==================================================
 # Virtual Environment
 # ==================================================
 
 .venv/
+venv/
+ENV/
+env/
+.env
 
 # ==================================================
 # Build & Packaging
@@ -39,6 +49,9 @@ dist/
 *.egg-info/
 .eggs/
 *.egg
+*.whl
+*.tar.gz
+*.zip
 
 # ==================================================
 # Coverage & Test Reports
@@ -48,15 +61,18 @@ dist/
 .coverage.*
 coverage.xml
 htmlcov/
+*.cover
+.tox/
 
 # ==================================================
 # Logs
 # ==================================================
 
 *.log
+logs/
 
 # ==================================================
-# VS Code Insiders 
+# IDE & Editors
 # ==================================================
 
 .vscode/*
@@ -64,11 +80,54 @@ htmlcov/
 !.vscode/extensions.json
 !.vscode/launch.json
 !.vscode/tasks.json
-
 .history/
 
+.idea/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+.project
+.pydevproject
+.settings/
+
 # ==================================================
-# Project-specific
+# Type Checking
+# ==================================================
+
+.dmypy.json
+dmypy.json
+pyrightconfig.json
+
+# ==================================================
+# Development
 # ==================================================
 
 .tmp/
+.tox/
+*.orig
+.env.local
+.env.*.local
+
+# ==================================================
+# OS Generated Files
+# ==================================================
+
+.AppleDouble
+.LSOverride
+Icon
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# ==================================================
+# Windows
+# ==================================================
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini

@@ -7,7 +7,7 @@ version = { attr = "pyforge_test.__version__" }
 
 [project]
 name = "pyforge-test"
-version = "0.1.0"
+dynamic = ["version"]
 description = "A lightweight Python unit testing framework with decorator-based test collection and execution."
 readme = "README.md"
 requires-python = ">=3.12"

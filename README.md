@@ -236,4 +236,4 @@ Contributions welcome! Open an issue or PR on [GitHub](https://github.com/ertant
 
 ---
 
-**Status**: Alpha (v0.1.0) | **Python**: 3.12+ | **Type Safe**: Yes | **Dependencies**: 0
+**Status**: Alpha (v0.2.0) | **Python**: 3.12+ | **Type Safe**: Yes | **Dependencies**: 0
